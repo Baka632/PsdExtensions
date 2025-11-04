@@ -9,15 +9,16 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.System.Com.StructuredStorage;
 using Windows.Win32.System.Variant;
-using Windows.Win32.UI.WindowsAndMessaging;
+using Windows.Win32.UI.Shell.PropertiesSystem;
 
 namespace PsdExtensions;
 
 [GeneratedComClass]
 [Guid("0987EFE0-CDE9-478E-87E3-511E76FDEBFF")]
-internal partial class WindowsExplorerPropertyProvider : IInitializeWithStream, IPropertyStore, IPropertyStoreCapabilities
+internal unsafe partial class WindowsExplorerPropertyProvider : IInitializeWithStream, IPropertyStore, IPropertyStoreCapabilities
 {
     private bool isInitialized;
+
     private static readonly IReadOnlyList<ValueTuple<PropertyType, PROPERTYKEY>> SupportedProps = [
             (PropertyType.HorizontalResolution, new PROPERTYKEY() { fmtid = new("6444048F-4C8B-11D1-8B70-080036B11A03"), pid = 5 }),
             (PropertyType.VerticalResolution, new PROPERTYKEY() { fmtid = new("6444048F-4C8B-11D1-8B70-080036B11A03"), pid = 6 }),
@@ -38,7 +39,7 @@ internal partial class WindowsExplorerPropertyProvider : IInitializeWithStream, 
         EntryPoint.DllRelease();
     }
 
-    public void GetAt(uint index, out PROPERTYKEY key)
+    public void GetAt(uint index, PROPERTYKEY* key)
     {
         if (index >= SupportedProps.Count)
         {
@@ -46,7 +47,7 @@ internal partial class WindowsExplorerPropertyProvider : IInitializeWithStream, 
         }
 
         (PropertyType, PROPERTYKEY) value = SupportedProps[(int)index];
-        key = value.Item2;
+        *key = value.Item2;
     }
 
     public void GetCount(out uint count)
@@ -54,26 +55,27 @@ internal partial class WindowsExplorerPropertyProvider : IInitializeWithStream, 
         count = (uint)SupportedProps.Count;
     }
 
-    public void GetValue(in PROPERTYKEY key, out PROPVARIANT pv)
+    public void GetValue(PROPERTYKEY* keyPtr, out PROPVARIANT pv)
     {
-        PROPERTYKEY propKey = key;
-        PROPVARIANT emptyPROPVARIANT = new();
-        emptyPROPVARIANT.Anonymous.Anonymous.vt = VARENUM.VT_EMPTY;
+        PROPERTYKEY key = *keyPtr;
 
-        if (!SupportedProps.Any(tuple => tuple.Item2.Equals(propKey)))
+        PROPVARIANT emptyPropVariant = new();
+        emptyPropVariant.Anonymous.Anonymous.vt = VARENUM.VT_EMPTY;
+
+        if (!SupportedProps.Any(tuple => PropVariantEquals(tuple.Item2, key)))
         {
-            pv = emptyPROPVARIANT;
+            pv = emptyPropVariant;
         }
         else
         {
-            (PropertyType type, PROPERTYKEY _) = SupportedProps.First(tuple => tuple.Item2.Equals(propKey));
+            (PropertyType type, PROPERTYKEY _) = SupportedProps.First(tuple => PropVariantEquals(tuple.Item2, key));
 
             pv = type switch
             {
                 PropertyType.HorizontalResolution => GetHorizontalResolutionPropVariant(),
                 PropertyType.VerticalResolution => GetVerticalResolutionPropVariant(),
                 PropertyType.ResolutionUnit => GetResolutionUnitVariant(),
-                _ => emptyPROPVARIANT
+                _ => emptyPropVariant
             };
         }
 
@@ -109,10 +111,17 @@ internal partial class WindowsExplorerPropertyProvider : IInitializeWithStream, 
 
             return variant;
         }
+
+        static bool PropVariantEquals(PROPERTYKEY left, PROPERTYKEY right)
+        {
+            return left.pid == right.pid && left.fmtid == right.fmtid;
+        }
     }
 
-    public void Initialize(Interop.IStream stream, STGM grfMode)
+    public void Initialize(IStream stream, uint grfModeInt)
     {
+        STGM grfMode = (STGM)grfModeInt;
+
         if (isInitialized)
         {
             Marshal.ThrowExceptionForHR(ERROR_ALREADY_INITIALIZED);
@@ -133,7 +142,6 @@ internal partial class WindowsExplorerPropertyProvider : IInitializeWithStream, 
 
         try
         {
-            // 在这里卡住了。
             IEnumerable<MetadataExtractor.Directory> directories = ImageMetadataReader.ReadMetadata(comStream);
             ExifDirectoryBase? ifd0Dir = (ExifDirectoryBase?)directories.FirstOrDefault(dir => dir is ExifDirectoryBase);
 
@@ -151,34 +159,30 @@ internal partial class WindowsExplorerPropertyProvider : IInitializeWithStream, 
                 XResolution = rationalX.ToDouble();
                 YResolution = rationalY.ToDouble();
                 Unit = unit;
-
-                PInvoke.MessageBox(HWND.Null, $"Initialized\nX:{XResolution}\nY:{YResolution}\nUnit:{unit}", "Notice", MESSAGEBOX_STYLE.MB_OK);
             }
             else
             {
-                PInvoke.MessageBox(HWND.Null, $"Failed!", "Notice", MESSAGEBOX_STYLE.MB_OK);
                 ThrowFail();
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            PInvoke.MessageBox(HWND.Null, $"Failed!\n{ex}", "Notice", MESSAGEBOX_STYLE.MB_OK);
             ThrowFail();
         }
 
         isInitialized = true;
     }
 
-    public void SetValue(in PROPERTYKEY key, in PROPVARIANT propVar)
+    public void SetValue(PROPERTYKEY* key, in PROPVARIANT propVar)
     {
         // 我们不会更改 PSD 中的值。
         Marshal.ThrowExceptionForHR(STG_E_ACCESSDENIED);
     }
 
-    public int IsPropertyWritable(in PROPERTYKEY key)
+    public HRESULT IsPropertyWritable(PROPERTYKEY* key)
     {
         // 我们不会更改 PSD 中的值。
-        return S_FALSE;
+        return new(S_FALSE);
     }
 
     public void Commit()

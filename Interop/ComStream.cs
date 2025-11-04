@@ -52,11 +52,12 @@ internal unsafe class ComStream(IStream source) : Stream
     {
         Span<byte> bytes = new(buffer, offset, count);
 
+        uint readCount = 0;
         fixed (byte* ptr = bytes)
         {
-            source.Read((nint)ptr, (uint)count, out uint readCount);
-            return (int)readCount;
+            source.Read(ptr, (uint)count, &readCount);
         }
+        return (int)readCount;
     }
 
     public override long Seek(long offset, SeekOrigin origin)
@@ -75,7 +76,8 @@ internal unsafe class ComStream(IStream source) : Stream
         Span<byte> span = new(buffer, offset, count);
         fixed (byte* ptr = span)
         {
-            source.Write((nint)ptr, (uint)count, out _);
+            uint writtenCount = 0;
+            source.Write(ptr, (uint)count, &writtenCount);
         }
     }
 }

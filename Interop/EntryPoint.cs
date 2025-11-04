@@ -2,9 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using Windows.Win32;
-using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
-using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace PsdExtensions.Interop;
 
@@ -25,17 +23,11 @@ internal static class EntryPoint
         {
             case DLL_PROCESS_ATTACH:
                 ModuleHandle = hModule;
-                AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
                 break;
             default:
                 break;
         }
         return true;
-    }
-
-    private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-    {
-        LogError(e.ExceptionObject);
     }
 
     [UnmanagedCallersOnly(EntryPoint = "DllCanUnloadNow", CallConvs = new[] { typeof(CallConvStdcall) })]
@@ -61,13 +53,26 @@ internal static class EntryPoint
             if (guid == typeof(IClassFactory).GUID || guid == typeof(IUnknown).GUID)
             {
                 ComClassFactory factory = new();
-
                 nint ptr = DefaultComWrappers.GetOrCreateComInterfaceForObject(factory, CreateComInterfaceFlags.None);
-                int result = Marshal.QueryInterface(ptr, in guid, out nint ppvPtr);
-                Marshal.Release(ptr);
-                *ppv = (void*)ppvPtr;
 
-                return result;
+                try
+                {
+                    int result = Marshal.QueryInterface(ptr, in guid, out nint ppvPtr);
+                    
+                    if (result == S_OK)
+                    {
+                        *ppv = (void*)ppvPtr;
+                    }
+
+                    return result;
+                }
+                finally
+                {
+                    if (ptr != nint.Zero)
+                    {
+                        Marshal.Release(ptr);
+                    }
+                }
             }
             else
             {
@@ -76,7 +81,6 @@ internal static class EntryPoint
         }
 		catch (Exception e)
 		{
-            LogError(e);
             return Marshal.GetHRForException(e);
 		}
     }
@@ -110,9 +114,8 @@ internal static class EntryPoint
                 }
             }
         }
-        catch (Exception e)
+        catch
         {
-            LogError(e);
         }
 
         return SELFREG_E_CLASS;
@@ -141,9 +144,8 @@ internal static class EntryPoint
 
             return S_OK;
         }
-        catch (Exception e)
+        catch
         {
-            LogError(e);
         }
 
         return SELFREG_E_CLASS;
@@ -165,11 +167,6 @@ internal static class EntryPoint
         using ModuleSafeHandle handle = new(ModuleHandle);
         int length = (int)PInvoke.GetModuleFileName(handle, path);
         return new string(path.AsSpan()[..length]);
-    }
-
-    private static void LogError(object obj)
-    {
-        PInvoke.MessageBox(HWND.Null, obj.ToString(), "Error!", MESSAGEBOX_STYLE.MB_OK | MESSAGEBOX_STYLE.MB_ICONERROR);
     }
 }
 

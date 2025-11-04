@@ -1,33 +1,31 @@
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
+using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
+using Windows.Win32.UI.Shell.PropertiesSystem;
 
 namespace PsdExtensions.Interop;
 
 [GeneratedComClass]
 internal partial class ComClassFactory : IClassFactory
 {
-    public unsafe void CreateInstance(nint pUnkOuter, in Guid riid, out nint ppvObject)
+    public unsafe void CreateInstance([MarshalAs(UnmanagedType.Interface)] object pUnkOuter, Guid* riid, [MarshalAs(UnmanagedType.Interface)] out object ppvObject)
     {
-        ppvObject = nint.Zero;
+        ppvObject = null!;
 
-        if (pUnkOuter != nint.Zero)
+        if (pUnkOuter != null)
         {
             Marshal.ThrowExceptionForHR(CLASS_E_NOAGGREGATION);
         }
 
-        if (riid == typeof(IUnknown).GUID
-            || riid == typeof(IInitializeWithStream).GUID
-            || riid == typeof(IPropertyStore).GUID
-            || riid == typeof(IPropertyStoreCapabilities).GUID)
+        Guid guid = *riid;
+        if (guid == typeof(IUnknown).GUID
+            || guid == typeof(IInitializeWithStream).GUID
+            || guid == typeof(IPropertyStore).GUID
+            || guid == typeof(IPropertyStoreCapabilities).GUID)
         {
             WindowsExplorerPropertyProvider provider = new();
-
-            nint ptr = DefaultComWrappers.GetOrCreateComInterfaceForObject(provider, CreateComInterfaceFlags.None);
-            int result = Marshal.QueryInterface(ptr, in riid, out ppvObject);
-            Marshal.Release(ptr);
-
-            Marshal.ThrowExceptionForHR(result);
+            ppvObject = provider;
         }
         else
         {
@@ -35,7 +33,7 @@ internal partial class ComClassFactory : IClassFactory
         }
     }
 
-    public void LockServer([MarshalAs(UnmanagedType.Bool)] bool fLock)
+    public void LockServer(BOOL fLock)
     {
         if (fLock)
         {

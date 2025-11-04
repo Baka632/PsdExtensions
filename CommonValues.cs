@@ -21,4 +21,13 @@ internal static class CommonValues
 
     internal const int S_OK = 0;
     internal const int S_FALSE = 1;
+
+    /// <summary>
+    /// 鼠标指针悬浮在文件图标的信息提示。
+    /// </summary>
+    internal const string PsdFileInfoTip = "prop:System.ItemTypeText;System.Size;System.DateModified;*System.Image.HorizontalResolution;*System.Image.VerticalResolution";
+    /// <summary>
+    /// 文件在属性窗口中的详细信息。
+    /// </summary>
+    internal const string PsdFileFullDetails = "prop:System.PropGroup.Image;*System.Image.HorizontalResolution;*System.Image.VerticalResolution;*System.Image.ResolutionUnit;System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemTypeText;System.ItemFolderPathDisplay;System.Size;System.DateCreated;System.DateModified;System.FileAttributes;*System.StorageProviderState;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith;*System.FileOwner;*System.ComputerName";
 }

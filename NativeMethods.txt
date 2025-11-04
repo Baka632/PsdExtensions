@@ -1,5 +1,7 @@
+IClassFactory
 IPropertyStore
-IInitializeWithStream
 IPropertyStoreCapabilities
+IStream
+IInitializeWithStream
 GetModuleFileName
 MessageBox
