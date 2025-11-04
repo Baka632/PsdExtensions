@@ -1,0 +1,5 @@
+IPropertyStore
+IInitializeWithStream
+IPropertyStoreCapabilities
+GetModuleFileName
+MessageBox
