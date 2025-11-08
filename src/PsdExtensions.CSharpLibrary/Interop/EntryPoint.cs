@@ -2,7 +2,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using Windows.Win32;
+using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace PsdExtensions.Interop;
 
@@ -23,6 +25,10 @@ internal static class EntryPoint
         {
             case DLL_PROCESS_ATTACH:
                 ModuleHandle = hModule;
+                AppDomain.CurrentDomain.FirstChanceException += (s, e) =>
+                {
+                    PInvoke.MessageBox(HWND.Null, e.Exception.ToString(), "Error", MESSAGEBOX_STYLE.MB_OK | MESSAGEBOX_STYLE.MB_ICONERROR);
+                };
                 break;
             default:
                 break;
@@ -52,25 +58,24 @@ internal static class EntryPoint
             Guid guid = *riid;
             if (guid == typeof(IClassFactory).GUID || guid == typeof(IUnknown).GUID)
             {
-                ComClassFactory factory = new();
-                nint ptr = DefaultComWrappers.GetOrCreateComInterfaceForObject(factory, CreateComInterfaceFlags.None);
-
+                IUnknown* ptr = null;
                 try
                 {
-                    int result = Marshal.QueryInterface(ptr, in guid, out nint ppvPtr);
-                    
+                    ComClassFactory factory = new();
+                    ptr = (IUnknown*)DefaultComWrappers.GetOrCreateComInterfaceForObject(factory, CreateComInterfaceFlags.None);
+                    HRESULT result = ptr->QueryInterface(guid, out void* ppvPtr);
                     if (result == S_OK)
                     {
-                        *ppv = (void*)ppvPtr;
+                        *ppv = ppvPtr;
                     }
 
                     return result;
                 }
                 finally
                 {
-                    if (ptr != nint.Zero)
+                    if (ptr != null)
                     {
-                        Marshal.Release(ptr);
+                        ptr->Release();
                     }
                 }
             }

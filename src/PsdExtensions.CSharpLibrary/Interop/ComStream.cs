@@ -55,7 +55,7 @@ internal unsafe class ComStream(IStream source) : Stream
         uint readCount = 0;
         fixed (byte* ptr = bytes)
         {
-            source.Read(ptr, (uint)count, &readCount);
+            source.Read(ptr, (uint)count, &readCount).ThrowOnFailure();
         }
         return (int)readCount;
     }
@@ -77,7 +77,7 @@ internal unsafe class ComStream(IStream source) : Stream
         fixed (byte* ptr = span)
         {
             uint writtenCount = 0;
-            source.Write(ptr, (uint)count, &writtenCount);
+            source.Write(ptr, (uint)count, &writtenCount).ThrowOnFailure();
         }
     }
 }

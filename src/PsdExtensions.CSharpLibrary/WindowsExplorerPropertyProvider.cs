@@ -4,7 +4,6 @@ using System.Runtime.InteropServices.Marshalling;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using PsdExtensions.Interop;
-using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.System.Com.StructuredStorage;
