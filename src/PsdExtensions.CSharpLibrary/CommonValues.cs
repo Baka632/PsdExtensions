@@ -1,8 +1,8 @@
-global using static PsdExtensions.CommonValues;
+global using static PsdExtensions.CSharp.CommonValues;
 
 using System.Runtime.InteropServices.Marshalling;
 
-namespace PsdExtensions;
+namespace PsdExtensions.CSharp;
 
 internal static class CommonValues
 {

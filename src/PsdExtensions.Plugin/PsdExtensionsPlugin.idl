@@ -1,0 +1,36 @@
+// PsdExtensions.Plugin.idl: PsdExtensions.Plugin 的 IDL 源
+//
+
+// 此文件将由 MIDL 工具处理以
+// 生成类型库(PsdExtensionsPlugin.tlb)和封送处理代码。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(a4351fcb-64e2-4052-b2fe-8ae3efc6d468),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IPsdPropertyProvider : IDispatch
+{
+};
+[
+	uuid(c23f365b-30df-4dd5-819d-3afc6d1e66ed),
+	version(1.0),
+]
+library PsdExtensionsPluginLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(5f4d0838-ea2a-40af-828f-c24bf8e0d90e)
+	]
+	coclass PsdPropertyProvider
+	{
+		[default] interface IPsdPropertyProvider;
+	};
+};
+
+import "shobjidl.idl";

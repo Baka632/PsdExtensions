@@ -1,6 +1,6 @@
-namespace PsdExtensions;
+namespace PsdExtensions.CSharp;
 
-public enum ResolutionUnit
+public enum ResolutionUnit : short
 {
     None,
     Inch,

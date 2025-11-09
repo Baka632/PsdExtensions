@@ -1,7 +1,7 @@
 using Windows.Win32;
 using Windows.Win32.System.Com;
 
-namespace PsdExtensions.Interop;
+namespace PsdExtensions.CSharp.Interop;
 
 internal unsafe class ComStream(IStream source) : Stream
 {

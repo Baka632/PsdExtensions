@@ -1,4 +1,4 @@
-namespace PsdExtensions;
+namespace PsdExtensions.CSharp;
 
 public enum PropertyType
 {

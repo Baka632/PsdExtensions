@@ -1,0 +1,38 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {5f4d0838-ea2a-40af-828f-c24bf8e0d90e} = s 'Baka632 PSD Property Provider'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Both'
+			}
+			TypeLib = s '{c23f365b-30df-4dd5-819d-3afc6d1e66ed}'
+			Version = s '1.0'
+		}
+	}
+}
+HKLM
+{
+	NoRemove SOFTWARE
+	{
+		NoRemove Microsoft
+		{
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove PropertySystem
+					{
+						NoRemove PropertyHandlers
+						{
+							ForceRemove .psd = s '{5f4d0838-ea2a-40af-828f-c24bf8e0d90e}'
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -10,6 +10,7 @@
     <CsWin32RunAsBuildTask>true</CsWin32RunAsBuildTask>
     <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
     <CetCompat>false</CetCompat>
+    <SelfContained>true</SelfContained>
   </PropertyGroup>
 
   <ItemGroup>
