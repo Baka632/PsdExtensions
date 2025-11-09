@@ -18,17 +18,17 @@ internal unsafe class PsdPropertyHelper
             return E_UNEXPECTED;
         }
 
-        IStream stream = (IStream)DefaultComWrappers.GetOrCreateObjectForComInstance(ptr, CreateObjectFlags.None);
-        ComStream comStream = new(stream);
-        comStream.Seek(0, SeekOrigin.Begin);
-
-        if (!comStream.CanWrite && (grfMode & STGM.STGM_READWRITE) == STGM.STGM_READWRITE)
-        {
-            return STG_E_ACCESSDENIED;
-        }
-
         try
         {
+            IStream stream = (IStream)DefaultComWrappers.GetOrCreateObjectForComInstance(ptr, CreateObjectFlags.None);
+            ComStream comStream = new(stream);
+            comStream.Seek(0, SeekOrigin.Begin);
+
+            if (!comStream.CanWrite && (grfMode & STGM.STGM_READWRITE) == STGM.STGM_READWRITE)
+            {
+                return STG_E_ACCESSDENIED;
+            }
+
             IEnumerable<MetadataExtractor.Directory> directories = ImageMetadataReader.ReadMetadata(comStream);
             ExifDirectoryBase? ifd0Dir = (ExifDirectoryBase?)directories.FirstOrDefault(dir => dir is ExifDirectoryBase);
 

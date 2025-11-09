@@ -57,14 +57,13 @@ END_COM_MAP()
 	}
 
 public:
-
-	HRESULT CPsdPropertyProvider::Initialize(IStream* pStream, DWORD grfMode);
-	HRESULT CPsdPropertyProvider::IsPropertyWritable(REFPROPERTYKEY key);
-	HRESULT CPsdPropertyProvider::Commit();
-	HRESULT CPsdPropertyProvider::GetAt(DWORD iProp, PROPERTYKEY* pkey);
-	HRESULT CPsdPropertyProvider::GetCount(DWORD* cProps);
-	HRESULT CPsdPropertyProvider::GetValue(REFPROPERTYKEY key, PROPVARIANT* pv);
-	HRESULT CPsdPropertyProvider::SetValue(REFPROPERTYKEY key, REFPROPVARIANT propVar);
+	HRESULT Initialize(IStream* pStream, DWORD grfMode);
+	HRESULT IsPropertyWritable(REFPROPERTYKEY key);
+	HRESULT Commit();
+	HRESULT GetAt(DWORD iProp, PROPERTYKEY* pkey);
+	HRESULT GetCount(DWORD* cProps);
+	HRESULT GetValue(REFPROPERTYKEY key, PROPVARIANT* pv);
+	HRESULT SetValue(REFPROPERTYKEY key, REFPROPVARIANT propVar);
 
 private:
 	double psdX = 0;

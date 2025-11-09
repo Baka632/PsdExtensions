@@ -83,7 +83,7 @@ HRESULT CPsdPropertyProvider::Initialize(IStream* pStream, DWORD grfMode)
 		psdY = y;
 		psdUnit = unit;
 	}
-	
+
 	if (pStream != NULL)
 	{
 		pStream->Release();

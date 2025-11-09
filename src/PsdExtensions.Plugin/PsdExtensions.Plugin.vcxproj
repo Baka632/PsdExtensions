@@ -264,6 +264,9 @@
     <ResourceCompile Include="PsdExtensions.Plugin.rc" />
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="..\PsdExtensions.CSharpLibrary\bin\Publish\net9.0-windows\PsdExtensions.CSharp.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="PsdExtensions.Plugin.def" />
     <None Include="PsdExtensions.Plugin.rgs" />
     <None Include="PsdPropertyProvider.rgs" />

@@ -79,4 +79,9 @@
       <Filter>源文件</Filter>
     </Midl>
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\PsdExtensions.CSharpLibrary\bin\Publish\net9.0-windows\PsdExtensions.CSharp.dll">
+      <Filter>资源文件</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
 </Project>
