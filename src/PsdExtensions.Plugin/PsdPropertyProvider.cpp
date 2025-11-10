@@ -20,7 +20,7 @@ const PCWSTR CSharpLibraryName = L"PsdExtensions.CSharp.dll";
 const PCSTR GetPsdPropertiesFuncName = "GetPsdProperties";
 
 // CPsdPropertyProvider
-HRESULT CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
+HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
 {
 	HRESULT hr = E_UNEXPECTED;
 
@@ -87,7 +87,7 @@ HRESULT CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
 	return hr;
 }
 
-HRESULT CPsdPropertyProvider::GetAt(DWORD iProp, PROPERTYKEY* pkey)
+HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::GetAt(DWORD iProp, PROPERTYKEY* pkey)
 {
 	if (iProp >= ARRAYSIZE(keys))
 	{
@@ -98,13 +98,13 @@ HRESULT CPsdPropertyProvider::GetAt(DWORD iProp, PROPERTYKEY* pkey)
 	return S_OK;
 }
 
-HRESULT CPsdPropertyProvider::GetCount(DWORD* cProps)
+HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::GetCount(DWORD* cProps)
 {
 	*cProps = ARRAYSIZE(keys);
 	return S_OK;
 }
 
-HRESULT CPsdPropertyProvider::GetValue(REFPROPERTYKEY key, PROPVARIANT* pv)
+HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::GetValue(REFPROPERTYKEY key, PROPVARIANT* pv)
 {
 	PropVariantInit(pv);
 
@@ -127,17 +127,17 @@ HRESULT CPsdPropertyProvider::GetValue(REFPROPERTYKEY key, PROPVARIANT* pv)
 }
 
 // 我们不会更改 PSD 中的值。
-HRESULT CPsdPropertyProvider::IsPropertyWritable(REFPROPERTYKEY key)
+HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::IsPropertyWritable(REFPROPERTYKEY key)
 {
 	return S_FALSE;
 }
 
-HRESULT CPsdPropertyProvider::Commit()
+HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::Commit()
 {
 	return STG_E_ACCESSDENIED;
 }
 
-HRESULT CPsdPropertyProvider::SetValue(REFPROPERTYKEY key, REFPROPVARIANT propVar)
+HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::SetValue(REFPROPERTYKEY key, REFPROPVARIANT propVar)
 {
 	return STG_E_ACCESSDENIED;
 }
