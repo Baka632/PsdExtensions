@@ -1,35 +1,43 @@
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using System.Runtime.InteropServices;
-using PsdExtensions.CSharp.Interop;
-using Windows.Win32.System.Com;
 
 namespace PsdExtensions.CSharp;
 
 internal unsafe class PsdPropertyHelper
 {
-    [UnmanagedCallersOnly(EntryPoint = "GetPsdProperties")]
-    private static int GetPsdProperties(nint ptr, uint grfModeInt, double* x, double* y, short* unit)
-    {
-        STGM grfMode = (STGM)grfModeInt;
+    internal const int E_NOINTERFACE = unchecked((int)0x80004002);
+    internal const int CLASS_E_NOAGGREGATION = unchecked((int)0x80040110);
+    internal const int CLASS_E_CLASSNOTAVAILABLE = unchecked((int)0x80040111);
+    internal const int ERROR_ALREADY_INITIALIZED = unchecked((int)0x800704df);
+    internal const int ERROR_NOT_SUPPORTED = unchecked((int)0x80070032);
+    internal const int STG_E_ACCESSDENIED = unchecked((int)0x80030005);
+    internal const int E_UNEXPECTED = unchecked((int)0x8000FFFF);
+    internal const int E_FAIL = unchecked((int)0x80004005);
+    internal const int E_INVALIDARG = unchecked((int)0x80070057);
+    internal const int SELFREG_E_CLASS = unchecked((int)0x80040201);
 
-        if (ptr == nint.Zero)
+    internal const int S_OK = 0;
+    internal const int S_FALSE = 1;
+
+    [UnmanagedCallersOnly(EntryPoint = "GetPsdProperties")]
+    private static int GetPsdProperties(nint str, uint grfModeInt, double* x, double* y, short* unit)
+    {
+        if (str == nint.Zero)
         {
             return E_UNEXPECTED;
         }
 
         try
         {
-            IStream stream = (IStream)DefaultComWrappers.GetOrCreateObjectForComInstance(ptr, CreateObjectFlags.None);
-            ComStream comStream = new(stream);
-            comStream.Seek(0, SeekOrigin.Begin);
+            string? path = Marshal.PtrToStringAuto(str);
 
-            if (!comStream.CanWrite && (grfMode & STGM.STGM_READWRITE) == STGM.STGM_READWRITE)
+            if (path is null)
             {
-                return STG_E_ACCESSDENIED;
+                return E_UNEXPECTED;
             }
 
-            IEnumerable<MetadataExtractor.Directory> directories = ImageMetadataReader.ReadMetadata(comStream);
+            IEnumerable<MetadataExtractor.Directory> directories = ImageMetadataReader.ReadMetadata(path);
             ExifDirectoryBase? ifd0Dir = (ExifDirectoryBase?)directories.FirstOrDefault(dir => dir is ExifDirectoryBase);
 
             if (ifd0Dir != null)
@@ -54,9 +62,9 @@ internal unsafe class PsdPropertyHelper
                 return E_FAIL;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return E_FAIL;
+            return Marshal.GetHRForException(ex);
         }
     }
 }

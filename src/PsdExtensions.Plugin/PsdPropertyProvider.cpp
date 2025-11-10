@@ -7,7 +7,7 @@
 
 constexpr auto EXTENDED_PATH = 32767;
 
-typedef HRESULT(*getPsdProperties)(void*, DWORD, double*, double*, short*);
+typedef HRESULT(*getPsdProperties)(const void*, DWORD, double*, double*, short*);
 
 HINSTANCE CPsdPropertyProvider::psdExtensionsCSharpLibrary = NULL;
 
@@ -20,11 +20,11 @@ const PCWSTR CSharpLibraryName = L"PsdExtensions.CSharp.dll";
 const PCSTR GetPsdPropertiesFuncName = "GetPsdProperties";
 
 // CPsdPropertyProvider
-HRESULT CPsdPropertyProvider::Initialize(IStream* pStream, DWORD grfMode)
+HRESULT CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, DWORD grfMode)
 {
 	HRESULT hr = E_UNEXPECTED;
 
-	if (pStream == NULL)
+	if (pszFilePath == NULL)
 	{
 		return hr;
 	}
@@ -75,18 +75,13 @@ HRESULT CPsdPropertyProvider::Initialize(IStream* pStream, DWORD grfMode)
 		return AtlHresultFromWin32(GetLastError());
 	}
 
-	hr = GetPsdProperties(pStream, grfMode, &x, &y, &unit);
+	hr = GetPsdProperties(pszFilePath, grfMode, &x, &y, &unit);
 
 	if (SUCCEEDED(hr))
 	{
 		psdX = x;
 		psdY = y;
 		psdUnit = unit;
-	}
-
-	if (pStream != NULL)
-	{
-		pStream->Release();
 	}
 
 	return hr;

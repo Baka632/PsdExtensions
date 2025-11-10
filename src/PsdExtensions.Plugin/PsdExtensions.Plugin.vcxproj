@@ -210,7 +210,7 @@
       <ModuleDefinitionFile>.\PsdExtensions.Plugin.def</ModuleDefinitionFile>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <RegisterOutput>true</RegisterOutput>
+      <RegisterOutput>false</RegisterOutput>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

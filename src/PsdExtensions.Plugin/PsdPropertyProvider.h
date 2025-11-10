@@ -24,7 +24,7 @@ class ATL_NO_VTABLE CPsdPropertyProvider :
 	public CComObjectRootEx<CComMultiThreadModel>,
 	public CComCoClass<CPsdPropertyProvider, &CLSID_PsdPropertyProvider>,
 	public IDispatchImpl<IPsdPropertyProvider, &IID_IPsdPropertyProvider, &LIBID_PsdExtensionsPluginLib, /*wMajor =*/ 1, /*wMinor =*/ 0>,
-	public IInitializeWithStream,
+	public IInitializeWithFile,
 	public IPropertyStore,
 	public IPropertyStoreCapabilities
 {
@@ -38,7 +38,7 @@ DECLARE_REGISTRY_RESOURCEID(106)
 BEGIN_COM_MAP(CPsdPropertyProvider)
 	COM_INTERFACE_ENTRY(IPsdPropertyProvider)
 	COM_INTERFACE_ENTRY(IDispatch)
-	COM_INTERFACE_ENTRY(IInitializeWithStream)
+	COM_INTERFACE_ENTRY(IInitializeWithFile)
 	COM_INTERFACE_ENTRY(IPropertyStore)
 	COM_INTERFACE_ENTRY(IPropertyStoreCapabilities)
 END_COM_MAP()
@@ -57,7 +57,7 @@ END_COM_MAP()
 	}
 
 public:
-	HRESULT Initialize(IStream* pStream, DWORD grfMode);
+	HRESULT Initialize(LPCWSTR pszFilePath, DWORD grfMode);
 	HRESULT IsPropertyWritable(REFPROPERTYKEY key);
 	HRESULT Commit();
 	HRESULT GetAt(DWORD iProp, PROPERTYKEY* pkey);
