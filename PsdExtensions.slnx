@@ -5,7 +5,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="src/PsdExtensions.CSharpLibrary/PsdExtensions.CSharp.csproj" />
+  <Project Path="src/PsdExtensions.CSharp/PsdExtensions.CSharp.csproj" />
   <Project Path="src/PsdExtensions.Plugin/PsdExtensions.Plugin.vcxproj" />
   <Project Path="src/PsdExtensions.Plugin/PsdExtensions.PluginPS/PsdExtensions.PluginPS.vcxproj" />
   <Project Path="src/PsdExtensions.Wpf/PsdExtensions.Wpf.csproj">
