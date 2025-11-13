@@ -7,18 +7,22 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
-    <Authors>Baka632</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
-    <Company>$(Authors)</Company>
-    <Copyright>Copyright © 2025 Baka632, licensed under MIT License.</Copyright>
-    <Description>For Mirroring.</Description>
-    <Product>$(AssemblyName)</Product>
     <Platforms>x64;x86;ARM64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ArtifactsPlatformName Condition="'$(Platform)' == 'x64'">x64</ArtifactsPlatformName>
     <ArtifactsPlatformName Condition="'$(Platform)' == 'x86'">Win32</ArtifactsPlatformName>
-    <ArtifactsPlatformName Condition="'$(Platform)' == 'arm64'">arm64</ArtifactsPlatformName>
+    <ArtifactsPlatformName Condition="'$(Platform)' == 'ARM64'">arm64</ArtifactsPlatformName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Baka632</Authors>
+    <Company>$(Authors)</Company>
+    <Copyright>Copyright © 2025 Baka632, licensed under MIT License.</Copyright>
+    <Description>For Mirroring.</Description>
+    <Product>$(AssemblyName)</Product>
+    <Version>1.0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
