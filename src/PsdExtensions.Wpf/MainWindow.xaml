@@ -1,12 +1,38 @@
-<Window x:Class="PsdExtensions.Wpf.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PsdExtensions.Wpf"
-        mc:Ignorable="d"
-        Title="Baka632's PSD" Height="450" Width="800">
+<Window
+    x:Class="PsdExtensions.Wpf.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PsdExtensions.Wpf"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Baka632 的 PSD 扩展"
+    Width="500"
+    Height="300"
+    MinWidth="400"
+    MinHeight="200"
+    d:DataContext="{d:DesignInstance Type=local:MainWindow}"
+    mc:Ignorable="d">
     <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="扩展安装状态：" />
+            <Grid Margin="0,0,0,10">
+                <TextBlock
+                    Foreground="#6ccb5f"
+                    Text="已安装"
+                    Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                <TextBlock Text="未安装" Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
+            </Grid>
 
+            <Grid>
+                <Button
+                    Click="OnInstallButtonClicked"
+                    Content="安装"
+                    Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
+                <Button
+                    Click="OnUninstallButtonClicked"
+                    Content="卸载"
+                    Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+            </Grid>
+        </StackPanel>
     </Grid>
 </Window>

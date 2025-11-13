@@ -80,8 +80,6 @@
     </Midl>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\..\artifacts\publish\PsdExtensions.CSharp\release_win-x64\PsdExtensions.CSharp.dll">
-      <Filter>资源文件</Filter>
-    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\..\artifacts\publish\PsdExtensions.CSharp\release_$(CSharpRuntimeIdentifier)\PsdExtensions.CSharp.dll" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,39 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
+    <Authors>Baka632</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <Company>$(Authors)</Company>
+    <Copyright>Copyright © 2025 Baka632, licensed under MIT License.</Copyright>
+    <Description>For Mirroring.</Description>
+    <Product>$(AssemblyName)</Product>
+    <Platforms>x64;x86;ARM64</Platforms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ArtifactsPlatformName Condition="'$(Platform)' == 'x64'">x64</ArtifactsPlatformName>
+    <ArtifactsPlatformName Condition="'$(Platform)' == 'x86'">Win32</ArtifactsPlatformName>
+    <ArtifactsPlatformName Condition="'$(Platform)' == 'arm64'">arm64</ArtifactsPlatformName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/PsdExtensions.CSharp.dll" CopyToOutputDirectory="Always" />
+    <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/PsdExtensions.Plugin.dll" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+  <!-- WPF projects tend to leave dangling "_wpftmp" directories in the "artifacts/bin" directory, clean these up after build -->
+  <!-- From: https://github.com/dotnet/wpf/issues/2930#issuecomment-2562793707 -->
+  <Target Name="CleanupWpfTmp" AfterTargets="Build" Condition=" '$(UseWPF)' == 'true' ">
+    <ItemGroup>
+      <_ArtifactsBinDirectories Include="$([System.IO.Directory]::GetDirectories(&quot;$(ArtifactsPath)\bin&quot;))" />
+      <_WpfTmpDirectories Include="@(_ArtifactsBinDirectories)" Condition="$([System.IO.Path]::GetFilename([System.String]::Copy('%(Identity)')).StartsWith('$(ArtifactsProjectName)_')) And $([System.String]::Copy('%(Identity)').EndsWith('_wpftmp'))" />
+    </ItemGroup>
+  
+    <RemoveDir Directories="@(_WpfTmpDirectories)" />
+  </Target>
 </Project>
