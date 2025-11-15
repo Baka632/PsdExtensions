@@ -23,7 +23,13 @@
     <Description>For Mirroring.</Description>
     <Product>$(AssemblyName)</Product>
     <Version>1.0.0.0</Version>
+    <ApplicationIcon>PsdExtensions.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="PsdExtensions.ico" />
+    <Resource Include="Assets\PsdExtensions.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/PsdExtensions.CSharp.dll" CopyToOutputDirectory="Always" />

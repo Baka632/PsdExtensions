@@ -12,14 +12,30 @@
     MinHeight="200"
     d:DataContext="{d:DesignInstance Type=local:MainWindow}"
     mc:Ignorable="d">
-    <ScrollViewer Padding="10">
+    <ScrollViewer
+        Padding="10"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
         <StackPanel>
-            <StackPanel Margin="0,0,0,20">
-                <TextBlock FontSize="20" Text="Baka632 的 PSD 扩展" />
-                <TextBlock>
-                    <Hyperlink Click="OnNavigateGitHubLinkClicked" NavigateUri="https://github.com/Baka632/PsdExtensions">GitHub 仓库地址</Hyperlink>
-                </TextBlock>
-            </StackPanel>
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image
+                    Height="50"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    Source="/Assets/PsdExtensions.png" />
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock FontSize="20" Text="Baka632 的 PSD 扩展" />
+                    <TextBlock>
+                        <Hyperlink Click="OnNavigateGitHubLinkClicked" NavigateUri="https://github.com/Baka632/PsdExtensions">GitHub 仓库地址</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
 
             <Expander
                 Margin="0,0,0,10"
