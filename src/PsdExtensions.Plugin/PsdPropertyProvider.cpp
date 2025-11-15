@@ -33,8 +33,8 @@ HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, 
 	double y = 0;
 	short unit = 0;
 	
-	TCHAR* currentDllPath = new TCHAR[EXTENDED_PATH];
-	if (!GetModuleFileName(_AtlModule.CurrentInstance, currentDllPath, EXTENDED_PATH))
+	WCHAR* currentDllPath = new WCHAR[EXTENDED_PATH];
+	if (!GetModuleFileNameW(_AtlModule.CurrentInstance, currentDllPath, EXTENDED_PATH))
 	{
 		delete[] currentDllPath;
 		return AtlHresultFromWin32(GetLastError());
@@ -57,7 +57,7 @@ HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, 
 	// NativeAOT 库无法被卸载，所以不需要关心释放问题。
 	if (psdExtensionsCSharpLibrary == NULL)
 	{
-		HINSTANCE handle = LoadLibrary(currentDllPath);
+		HINSTANCE handle = LoadLibraryW(currentDllPath);
 		delete[] currentDllPath;
 
 		if (handle == NULL)

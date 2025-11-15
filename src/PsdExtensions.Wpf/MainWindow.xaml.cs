@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Documents;
 using Microsoft.Win32;
 
 namespace PsdExtensions.Wpf;
@@ -134,5 +135,15 @@ public partial class MainWindow : Window
     private static void DisplayRegSvr32Error(int errorCode)
     {
         MessageBox.Show($"安装失败：\n在使用 regsvr32 注册组件时出错，错误代码：{errorCode}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+
+    private void OnNavigateGitHubLinkClicked(object sender, RoutedEventArgs e)
+    {
+        Hyperlink link = (Hyperlink)sender;
+        ProcessStartInfo startInfo = new(link.NavigateUri.AbsoluteUri)
+        {
+            UseShellExecute = true
+        };
+        Process.Start(startInfo);
     }
 }
