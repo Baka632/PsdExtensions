@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:PsdExtensions.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Baka632 的 PSD 扩展"
-    Width="500"
+    Width="600"
     Height="400"
     MinWidth="400"
     MinHeight="200"
@@ -67,7 +67,7 @@
                 <TextBlock TextWrapping="Wrap">
                     <Run Text="建议在安装/卸载扩展后重启计算机，以应用更改及防止卸载后文件残留。" />
                     <LineBreak />
-                    <Run Text="也可以直接在任务管理器中重启文件资源管理器，这样便不必重启。" />
+                    <Run Text="也可以直接在任务管理器中重启文件资源管理器，这样便不必重启计算机。" />
                 </TextBlock>
             </Expander>
         </StackPanel>
