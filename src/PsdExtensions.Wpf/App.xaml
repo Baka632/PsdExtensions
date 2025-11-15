@@ -4,14 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:helpers="clr-namespace:PsdExtensions.Wpf.Helpers"
     xmlns:local="clr-namespace:PsdExtensions.Wpf"
-    StartupUri="MainWindow.xaml"
-    ThemeMode="System">
+    StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
