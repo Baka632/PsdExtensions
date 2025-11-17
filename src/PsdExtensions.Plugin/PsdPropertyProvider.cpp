@@ -7,14 +7,15 @@
 
 constexpr auto EXTENDED_PATH = 32767;
 
-typedef HRESULT(*getPsdProperties)(const void*, DWORD, double*, double*, short*);
+typedef HRESULT(*getPsdProperties)(const void*, DWORD, double*, double*, short*, short*);
 
 HINSTANCE CPsdPropertyProvider::psdExtensionsCSharpLibrary = NULL;
 
 const PROPERTYKEY keys[] = {
 	PKEY_Image_HorizontalResolution,
 	PKEY_Image_VerticalResolution,
-	PKEY_Image_ResolutionUnit
+	PKEY_Image_ResolutionUnit,
+	PKEY_Document_PageCount
 };
 const PCWSTR CSharpLibraryName = L"PsdExtensions.CSharp.dll";
 const PCSTR GetPsdPropertiesFuncName = "GetPsdProperties";
@@ -29,10 +30,6 @@ HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, 
 		return hr;
 	}
 
-	double x = 0;
-	double y = 0;
-	short unit = 0;
-	
 	WCHAR* currentDllPath = new WCHAR[EXTENDED_PATH];
 	if (!GetModuleFileNameW(_AtlModule.CurrentInstance, currentDllPath, EXTENDED_PATH))
 	{
@@ -75,13 +72,19 @@ HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, 
 		return AtlHresultFromWin32(GetLastError());
 	}
 
-	hr = GetPsdProperties(pszFilePath, grfMode, &x, &y, &unit);
+	double x = 0;
+	double y = 0;
+	short unit = 0;
+	short layerCount = 0;
+
+	hr = GetPsdProperties(pszFilePath, grfMode, &x, &y, &unit, &layerCount);
 
 	if (SUCCEEDED(hr))
 	{
 		psdX = x;
 		psdY = y;
 		psdUnit = unit;
+        psdLayerCount = layerCount;
 	}
 
 	return hr;
@@ -119,6 +122,10 @@ HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::GetValue(REFPROPERTYKEY key, PRO
 	else if (key == PKEY_Image_ResolutionUnit)
 	{
 		return InitPropVariantFromInt16(psdUnit, pv);
+	}
+	else if (key == PKEY_Document_PageCount)
+	{
+		return InitPropVariantFromInt32((LONG)psdLayerCount, pv);
 	}
 	else
 	{

@@ -69,6 +69,7 @@ private:
 	double psdX = 0;
 	double psdY = 0;
 	short psdUnit = 0;
+	short psdLayerCount = 0;
 	static HINSTANCE psdExtensionsCSharpLibrary;
 };
 
