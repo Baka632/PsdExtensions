@@ -10,5 +10,6 @@
 // 添加要在此处预编译的标头
 #include "framework.h"
 #pragma comment(lib, "Pathcch.lib")
+#pragma comment(lib, "Propsys.lib")
 
 #endif //PCH_H

@@ -2,20 +2,23 @@
 
 #include "pch.h"
 #include "PsdPropertyProvider.h"
-#include "dllmain.h"
 #include <PathCch.h>
-
-constexpr auto EXTENDED_PATH = 32767;
+#include "CommonValues.h"
 
 typedef HRESULT(*getPsdProperties)(const void*, DWORD, double*, double*, short*, short*);
 
 HINSTANCE CPsdPropertyProvider::psdExtensionsCSharpLibrary = NULL;
 
+const GUID PKEY_Psd_LayerCountGuid = { 0x4e7909c4, 0x527e, 0x445e, { 0x88, 0x0e, 0xb7, 0x50, 0xaf, 0x8e, 0x0c, 0x59 } };
+const PROPERTYKEY PKEY_Psd_LayerCount = {
+	PKEY_Psd_LayerCountGuid, 2
+};
+
 const PROPERTYKEY keys[] = {
 	PKEY_Image_HorizontalResolution,
 	PKEY_Image_VerticalResolution,
 	PKEY_Image_ResolutionUnit,
-	PKEY_Document_PageCount
+	PKEY_Psd_LayerCount
 };
 const PCWSTR CSharpLibraryName = L"PsdExtensions.CSharp.dll";
 const PCSTR GetPsdPropertiesFuncName = "GetPsdProperties";
@@ -31,19 +34,14 @@ HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::Initialize(LPCWSTR pszFilePath, 
 	}
 
 	WCHAR* currentDllPath = new WCHAR[EXTENDED_PATH];
-	if (!GetModuleFileNameW(_AtlModule.CurrentInstance, currentDllPath, EXTENDED_PATH))
-	{
-		delete[] currentDllPath;
-		return AtlHresultFromWin32(GetLastError());
-	}
 
-	hr = PathCchRemoveFileSpec(currentDllPath, EXTENDED_PATH);
+    hr = GetCurrentModulePath(currentDllPath, EXTENDED_PATH);
 	if (FAILED(hr))
 	{
 		delete[] currentDllPath;
 		return hr;
 	}
-	
+
 	hr = PathCchCombineEx(currentDllPath, EXTENDED_PATH, currentDllPath, CSharpLibraryName, PATHCCH_ALLOW_LONG_PATHS);
 	if (FAILED(hr))
 	{
@@ -123,9 +121,9 @@ HRESULT STDMETHODCALLTYPE CPsdPropertyProvider::GetValue(REFPROPERTYKEY key, PRO
 	{
 		return InitPropVariantFromInt16(psdUnit, pv);
 	}
-	else if (key == PKEY_Document_PageCount)
+	else if (key == PKEY_Psd_LayerCount)
 	{
-		return InitPropVariantFromInt32((LONG)psdLayerCount, pv);
+        return InitPropVariantFromInt16(psdLayerCount, pv);
 	}
 	else
 	{

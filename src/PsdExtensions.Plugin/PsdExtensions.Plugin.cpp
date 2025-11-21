@@ -4,9 +4,9 @@
 #include "framework.h"
 #include "resource.h"
 #include "PsdExtensionsPlugin_i.h"
-#include "dllmain.h"
 #include <Windows.h>
 #include <atlcomcli.h>
+#include "CommonValues.h"
 
 using namespace ATL;
 
@@ -24,11 +24,13 @@ STDAPI DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID
 	return _AtlModule.DllGetClassObject(rclsid, riid, ppv);
 }
 
-PCWSTR PsdFullDetails = L"prop:System.PropGroup.Image;*System.Image.HorizontalResolution;*System.Image.VerticalResolution;System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemTypeText;System.ItemFolderPathDisplay;System.Size;System.DateCreated;System.DateModified;System.FileAttributes;*System.StorageProviderState;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith;*System.FileOwner;*System.ComputerName";
-PCWSTR PsdInfoTip = L"prop:System.ItemTypeText;System.Size;System.DateModified;*System.Image.HorizontalResolution;*System.Image.VerticalResolution";
-PCWSTR PsdPreviewDetails = L"prop:System.DateModified;System.Size;System.DateCreated;*System.Image.HorizontalResolution;*System.Image.VerticalResolution;*System.StorageProviderState;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith";
-PCWSTR PsdContentViewModeForBrowse = L"prop:~System.ItemNameDisplay;*System.Image.HorizontalResolution;~System.LayoutPattern.PlaceHolder;*System.Image.VerticalResolution;System.DateModified;System.Size";
-PCWSTR PsdContentViewModeForSearch = L"prop:~System.ItemNameDisplay;~System.ItemFolderPathDisplay;*System.Image.HorizontalResolution;*System.Image.VerticalResolution;System.DateModified;System.Size";
+PCWSTR PropertyDescriptionFilename = L"CustomPsdProperties.propdesc";
+
+PCWSTR PsdFullDetails = L"prop:System.PropGroup.Image;*System.Image.HorizontalResolution;*System.Image.VerticalResolution;*Baka632.PsdExtensions.LayerCount;System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemTypeText;System.ItemFolderPathDisplay;System.Size;System.DateCreated;System.DateModified;System.FileAttributes;*System.StorageProviderState;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith;*System.FileOwner;*System.ComputerName";
+PCWSTR PsdInfoTip = L"prop:System.ItemTypeText;System.Size;System.DateModified;*System.Image.HorizontalResolution;*System.Image.VerticalResolution;*Baka632.PsdExtensions.LayerCount";
+PCWSTR PsdPreviewDetails = L"prop:System.DateModified;System.Size;System.DateCreated;*System.Image.HorizontalResolution;*System.Image.VerticalResolution;*Baka632.PsdExtensions.LayerCount;*System.StorageProviderState;*System.OfflineAvailability;*System.OfflineStatus;*System.SharedWith";
+PCWSTR PsdContentViewModeForBrowse = L"prop:~System.ItemNameDisplay;*System.Image.HorizontalResolution;*Baka632.PsdExtensions.LayerCount;*System.Image.VerticalResolution;System.DateModified;System.Size";
+PCWSTR PsdContentViewModeForSearch = L"prop:~System.ItemNameDisplay;~System.ItemFolderPathDisplay;*System.Image.HorizontalResolution;*Baka632.PsdExtensions.LayerCount;System.DateModified;System.Size";
 PCWSTR PsdContentViewModeLayoutPattern = L"delta";
 
 static DWORD CalcPCWSTRBytes(PCWSTR str)
@@ -127,12 +129,54 @@ static HRESULT UnregisterPropertyList()
 	return hr;
 }
 
+static HRESULT RegisterPropertyDescription()
+{
+	WCHAR* currentPropDescPath = new WCHAR[EXTENDED_PATH];
+    HRESULT hr = GetCurrentModulePath(currentPropDescPath, EXTENDED_PATH);
+	if (SUCCEEDED(hr))
+	{
+		hr = PathCchCombineEx(currentPropDescPath, EXTENDED_PATH, currentPropDescPath, PropertyDescriptionFilename, PATHCCH_ALLOW_LONG_PATHS);
+		if (SUCCEEDED(hr))
+		{
+			hr = PSRegisterPropertySchema(currentPropDescPath);
+		}
+	}
+
+    delete[] currentPropDescPath;
+    return hr;
+}
+
+static HRESULT UnregisterPropertyDescription()
+{
+	WCHAR* currentPropDescPath = new WCHAR[EXTENDED_PATH];
+    HRESULT hr = GetCurrentModulePath(currentPropDescPath, EXTENDED_PATH);
+	if (SUCCEEDED(hr))
+	{
+		hr = PathCchCombineEx(currentPropDescPath, EXTENDED_PATH, currentPropDescPath, PropertyDescriptionFilename, PATHCCH_ALLOW_LONG_PATHS);
+		if (SUCCEEDED(hr))
+		{
+			hr = PSUnregisterPropertySchema(currentPropDescPath);
+		}
+	}
+
+    delete[] currentPropDescPath;
+    return hr;
+}
+
 // DllRegisterServer - 向系统注册表中添加项。
 STDAPI DllRegisterServer(void)
 {
 	// 注册对象、类型库和类型库中的所有接口
 	HRESULT hr = _AtlModule.DllRegisterServer();
-	RegisterPropertyList();
+	if (SUCCEEDED(hr))
+	{
+		hr = RegisterPropertyList();
+		if (SUCCEEDED(hr))
+		{
+			hr = RegisterPropertyDescription();
+		}
+	}
+
 	return hr;
 }
 
@@ -140,7 +184,14 @@ STDAPI DllRegisterServer(void)
 STDAPI DllUnregisterServer(void)
 {
 	HRESULT hr = _AtlModule.DllUnregisterServer();
-	UnregisterPropertyList();
+	if (SUCCEEDED(hr))
+	{
+		hr = UnregisterPropertyList();
+		if (SUCCEEDED(hr))
+		{
+			hr = UnregisterPropertyDescription();
+		}
+	}
 	return hr;
 }
 

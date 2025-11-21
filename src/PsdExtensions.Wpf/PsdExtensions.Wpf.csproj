@@ -34,6 +34,7 @@
   <ItemGroup>
     <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/PsdExtensions.CSharp.dll" CopyToOutputDirectory="Always" />
     <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/PsdExtensions.Plugin.dll" CopyToOutputDirectory="Always" />
+    <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/CustomPsdProperties.propdesc" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
   <!-- WPF projects tend to leave dangling "_wpftmp" directories in the "artifacts/bin" directory, clean these up after build -->

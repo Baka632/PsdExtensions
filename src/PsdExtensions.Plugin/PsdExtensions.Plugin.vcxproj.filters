@@ -40,6 +40,9 @@
     <ClInclude Include="PsdPropertyProvider.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CommonValues.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PsdExtensions.Plugin.cpp">
@@ -81,5 +84,8 @@
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\..\artifacts\publish\PsdExtensions.CSharp\release_$(CSharpRuntimeIdentifier)\PsdExtensions.CSharp.dll" />
+    <CopyFileToFolders Include="CustomPsdProperties.propdesc">
+      <Filter>资源文件</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://schemas.microsoft.com/windows/2006/propertydescription" schemaVersion="1.0">
+	<propertyDescriptionList publisher="Baka632" product="Baka632 的 PSD 扩展">
+        <propertyDescription name="Baka632.PsdExtensions.LayerCount" formatID="{4E7909C4-527E-445E-880E-B750AF8E0C59}" propID="2">
+            <searchInfo isColumn="true"/>
+            <typeInfo type="Int16" isInnate="true" isViewable="true" isQueryable="true" conditionType="Number"/>
+            <labelInfo label="图层数" />
+            <displayInfo displayType="Number" relativeDescriptionType="Count" />
+            <relatedPropertyInfo>
+                <relatedProperty relationshipName="System.RelatedProperty.Text" propertyName="System.Document.PageCount" />
+            </relatedPropertyInfo>
+        </propertyDescription>
+    </propertyDescriptionList>
+</schema>
