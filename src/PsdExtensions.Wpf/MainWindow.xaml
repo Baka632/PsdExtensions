@@ -50,6 +50,12 @@
                         <TextBlock Text="未安装" Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
                     </Grid>
 
+                    <TextBlock
+                        Margin="0,0,0,10"
+                        Foreground="#b2b200"
+                        Text="需要重新安装扩展！"
+                        Visibility="{Binding IsPsdExtensionsRequireReinstall, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+
                     <Grid>
                         <Button
                             Click="OnInstallButtonClicked"

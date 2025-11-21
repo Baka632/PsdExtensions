@@ -25,6 +25,15 @@ public partial class MainWindow : Window
     public static readonly DependencyProperty IsPsdExtensionsRegisteredProperty =
         DependencyProperty.Register(nameof(IsPsdExtensionsRegistered), typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
 
+    public bool IsPsdExtensionsRequireReinstall
+    {
+        get => (bool)GetValue(IsPsdExtensionsRequireReinstallProperty);
+        set => SetValue(IsPsdExtensionsRequireReinstallProperty, value);
+    }
+
+    public static readonly DependencyProperty IsPsdExtensionsRequireReinstallProperty =
+        DependencyProperty.Register(nameof(IsPsdExtensionsRequireReinstall), typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
+
     public MainWindow()
     {
         DataContext = this;
@@ -34,22 +43,38 @@ public partial class MainWindow : Window
 
     private void UpdatePsdExtensionsRegisterStatus()
     {
-        IsPsdExtensionsRegistered = DetectPsdExtensionsRegistered();
-
-        static bool DetectPsdExtensionsRegistered()
+        using RegistryKey? clsid = Registry.ClassesRoot.OpenSubKey("CLSID");
+        if (clsid != null)
         {
-            using RegistryKey? clsid = Registry.ClassesRoot.OpenSubKey("CLSID");
-            if (clsid != null)
+            using RegistryKey? psdExtensionsKey = clsid.OpenSubKey(PsdExtensionsGuid);
+            if (psdExtensionsKey != null)
             {
-                using RegistryKey? psdExtensionsKey = clsid.OpenSubKey(PsdExtensionsGuid);
-                if (psdExtensionsKey != null)
+                using RegistryKey? inProcServer32 = psdExtensionsKey.OpenSubKey("InprocServer32");
+                if (inProcServer32 != null)
                 {
-                    return true;
+                    string? path = inProcServer32.GetValue(null)?.ToString();
+
+                    if (!string.IsNullOrWhiteSpace(path))
+                    {
+                        FileInfo inRegistry = new(path);
+                        FileInfo current = new(PsdExtensionsDllPath);
+
+                        if (inRegistry.Exists && current.Exists && inRegistry.FullName == current.FullName)
+                        {
+                            IsPsdExtensionsRegistered = true;
+                            IsPsdExtensionsRequireReinstall = false;
+                            return;
+                        }
+                        else
+                        {
+                            IsPsdExtensionsRequireReinstall = true;
+                        }
+                    }
                 }
             }
-
-            return false;
         }
+
+        IsPsdExtensionsRegistered = false;
     }
 
     private async void OnInstallButtonClicked(object sender, RoutedEventArgs e)
