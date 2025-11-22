@@ -77,7 +77,7 @@ public sealed partial class MainViewModel : ObservableObject
             if (IsPsdExtensionsRequireReinstall)
             {
                 PsdExtensionActionButtonText = "重新安装扩展";
-                PsdExtensionActionButtonCommand = ReinstallExtensionsCommand;
+                PsdExtensionActionButtonCommand = InstallPsdExtensionsCommand;
             }
             else if (IsPsdExtensionsRegistered)
             {
@@ -128,49 +128,17 @@ public sealed partial class MainViewModel : ObservableObject
         UpdatePsdExtensionsRegisterStatus();
     }
 
-    [RelayCommand]
-    private async Task ReinstallExtensions()
+    private static async Task<bool> RegisterPsdExtensions()
     {
-        Process reinstallProcess = new();
-        ProcessStartInfo info = new()
-        {
-            Verb = "runas",
-            Arguments = "/reinstall-extension",
-            UseShellExecute = true,
-            WorkingDirectory = Environment.ProcessPath,
-            FileName = Path.ChangeExtension(typeof(MainWindow).Assembly.Location, ".exe")
-        };
-
-        reinstallProcess.StartInfo = info;
-
-        try
-        {
-            reinstallProcess.Start();
-            await reinstallProcess.WaitForExitAsync();
-        }
-        catch (Win32Exception win32) when (win32.NativeErrorCode == 1223)
-        {
-            // 用户取消了操作。
-        }
-        catch (Exception ex)
-        {
-            DisplayError(ex);
-        }
-
-        UpdatePsdExtensionsRegisterStatus();
+        return await CallRegSvr32();
     }
 
-    private static async Task RegisterPsdExtensions()
+    private static async Task<bool> UnregisterPsdExtensions()
     {
-        await CallRegSvr32();
+        return await CallRegSvr32(true);
     }
 
-    private static async Task UnregisterPsdExtensions()
-    {
-        await CallRegSvr32(true);
-    }
-
-    private static async Task CallRegSvr32(bool isUnregister = false)
+    private static async Task<bool> CallRegSvr32(bool isUnregister = false)
     {
         string argument = isUnregister
             ? $"{CommonValues.PsdExtensionsDllPath} /u"
@@ -199,7 +167,7 @@ public sealed partial class MainViewModel : ObservableObject
                     DisplayRunAsAdmin();
                     break;
                 case 0:
-                    break;
+                    return true;
                 default:
                     DisplayRegSvr32Error(exitCode);
                     break;
@@ -213,6 +181,8 @@ public sealed partial class MainViewModel : ObservableObject
         {
             DisplayError(ex);
         }
+
+        return false;
     }
 
     private static void DisplayError(Exception ex)

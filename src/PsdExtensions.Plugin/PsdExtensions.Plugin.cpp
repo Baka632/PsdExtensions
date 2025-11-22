@@ -166,6 +166,8 @@ static HRESULT UnregisterPropertyDescription()
 // DllRegisterServer - 向系统注册表中添加项。
 STDAPI DllRegisterServer(void)
 {
+	DllUnregisterServer();
+
 	// 注册对象、类型库和类型库中的所有接口
 	HRESULT hr = _AtlModule.DllRegisterServer();
 	if (SUCCEEDED(hr))
