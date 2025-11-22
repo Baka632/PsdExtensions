@@ -192,7 +192,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     private static void DisplayRunAsAdmin()
     {
-        MessageBox.Show($"此操作需要管理员权限，请以管理员身份运行此程序", "错误", MessageBoxButton.OK, MessageBoxImage.Warning);
+        MessageBox.Show($"安装失败，请尝试以管理员身份运行此程序", "错误", MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
     private static void DisplayRegSvr32Error(int errorCode)
