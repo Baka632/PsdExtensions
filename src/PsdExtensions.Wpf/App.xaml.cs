@@ -14,6 +14,6 @@ public partial class App : Application
         ThemeMode = OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000, 0)
             ? ThemeMode.System
             : ThemeMode.None;
-#pragma warning restore WPF000
+#pragma warning restore WPF0001
     }
 }

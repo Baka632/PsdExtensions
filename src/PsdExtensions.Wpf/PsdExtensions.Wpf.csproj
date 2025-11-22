@@ -14,6 +14,7 @@
     <ArtifactsPlatformName Condition="'$(Platform)' == 'x64'">x64</ArtifactsPlatformName>
     <ArtifactsPlatformName Condition="'$(Platform)' == 'x86'">Win32</ArtifactsPlatformName>
     <ArtifactsPlatformName Condition="'$(Platform)' == 'ARM64'">arm64</ArtifactsPlatformName>
+    <StartupObject>PsdExtensions.Wpf.Program</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -35,6 +36,10 @@
     <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/PsdExtensions.CSharp.dll" CopyToOutputDirectory="Always" />
     <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/PsdExtensions.Plugin.dll" CopyToOutputDirectory="Always" />
     <None Include="../../artifacts/bin/PsdExtensions.Plugin/$(ArtifactsPlatformName)/Release/CustomPsdProperties.propdesc" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
 
   <!-- WPF projects tend to leave dangling "_wpftmp" directories in the "artifacts/bin" directory, clean these up after build -->

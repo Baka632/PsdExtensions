@@ -5,12 +5,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PsdExtensions.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:PsdExtensions.Wpf.ViewModels"
     Title="Baka632 的 PSD 扩展"
     Width="600"
     Height="400"
     MinWidth="400"
     MinHeight="200"
-    d:DataContext="{d:DesignInstance Type=local:MainWindow}"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
     mc:Ignorable="d">
     <ScrollViewer
         Padding="10"
@@ -42,30 +43,12 @@
                 Header="扩展安装状态"
                 IsExpanded="True">
                 <StackPanel>
-                    <Grid Margin="0,0,0,10">
-                        <TextBlock
-                            Foreground="#6ccb5f"
-                            Text="已安装"
-                            Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
-                        <TextBlock Text="未安装" Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
-                    </Grid>
-
                     <TextBlock
                         Margin="0,0,0,10"
-                        Foreground="#b2b200"
-                        Text="需要重新安装扩展！"
-                        Visibility="{Binding IsPsdExtensionsRequireReinstall, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
+                        Foreground="{Binding PsdExtensionStatusTextBrush, Mode=OneWay}"
+                        Text="{Binding PsdExtensionStatusText, Mode=OneWay}" />
 
-                    <Grid>
-                        <Button
-                            Click="OnInstallButtonClicked"
-                            Content="安装"
-                            Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=true, Mode=OneWay}" />
-                        <Button
-                            Click="OnUninstallButtonClicked"
-                            Content="卸载"
-                            Visibility="{Binding IsPsdExtensionsRegistered, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" />
-                    </Grid>
+                    <Button Command="{Binding PsdExtensionActionButtonCommand, Mode=OneWay}" Content="{Binding PsdExtensionActionButtonText, Mode=OneWay}" />
                 </StackPanel>
             </Expander>
 
